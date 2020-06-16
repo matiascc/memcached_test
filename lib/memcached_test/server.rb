@@ -1,40 +1,59 @@
-require 'socket'               
+require 'socket'          
+require './memcached'
  
- class Server
-    def initialize(socket_address, socket_port)
-       @server_socket = TCPServer.open(socket_port, socket_address)
- 
-       @connections_details = Hash.new
-       @connected_clients = Hash.new
- 
-       @connections_details[:server] = @server_socket
-       @connections_details[:clients] = @connected_clients
- 
-       puts 'Starting server.........'
-       run
-    end
+class Server
+   def initialize(socket_address, socket_port)
+      @server_socket = TCPServer.open(socket_port, socket_address)
+      puts 'Starting server.........'
+      @memcached = Memcached.new    
+      self.run
+   end
 
-    def run
-       loop{
-          client_connection = @server_socket.accept
-          Thread.start(client_connection) do |conn| # open thread for each accepted connection
-             conn_name = conn.gets.chomp.to_sym
-             if(@connections_details[:clients][conn_name] != nil) # avoid connection if user exits
-                conn.puts "This username already exist"
-                conn.puts "quit"
-                conn.kill self
-             end
- 
-             puts "Connection established #{conn_name} => #{conn}"
-             @connections_details[:clients][conn_name] = conn
-             conn.puts "Connection established successfully #{conn_name} => #{conn}, you may continue with chatting....."
- 
-          end
-       }.join
+   def run
+      loop{
+         client_connection = @server_socket.accept
+         Thread.start(client_connection) do |conn|
+               puts "Connection established #{conn}"
+               
+               while input = conn.gets.chomp #.to_sym
+                  command = input.split(' ')[0] 
+                  parameters = input.split(' ').drop(1)
+                  
+                  case command
+                  when "get"
+                     resultado = @memcached.get(parameters[0])
+                     if resultado != nil
+                           conn.puts "Key: #{resultado[0]}, Flags: #{resultado[1]}, Exptime: #{resultado[2]}, Bytes: #{resultado[3]}, Data: #{resultado[4]}"
+                     else
+                           conn.puts "Couldn't find value"
+                     end
+                  when "gets"
+                     resultados = @memcached.multiple_get(parameters)
+                     if resultado != []
+                           resultados.each do |resultado|
+                              conn.puts "Key: #{resultado[0]}, Flags: #{resultado[1]}, Exptime: #{resultado[2]}, Bytes: #{resultado[3]}, Data: #{resultado[4]}"
+                           end
+                     else
+                           conn.puts "Couldn't find any value"
+                     end
+                  when "set"
+                     @memcached.set(parameters[0], parameters[1], parameters[2], parameters[3], parameters.slice(4, parameters.length).join(' '))
+                     conn.puts "Success on set"
+                  when "add"
+                     conn.puts "You're doing a add, and saying #{parameters.join(' ')}"
+                  when "quit"
+                     break
+                  else
+                     conn.puts "Invalid command, please retry"
+                  end
+               end
 
-       client.puts "Closing the connection."
-       client.close 
-    end
+               conn.puts "Closing connection"
+               conn.flush
+               conn.close
+         end
+      }
+   end
 end
 
-Server.new( 11211, "localhost" )
+Server.new(11211, "localhost")
