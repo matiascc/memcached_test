@@ -1,5 +1,5 @@
 require 'socket'          
-require './memcached'
+require_relative 'memcached'
  
 class Server
    def initialize(socket_address, socket_port)

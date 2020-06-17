@@ -1,4 +1,4 @@
-require './memcached_item'
+require_relative 'memcached_item'
 
 class Memcached
     
@@ -29,6 +29,7 @@ class Memcached
     def set(key, flags, exptime, bytes, data)
         item = Memcached_item.new(flags, exptime, bytes, data)
         @cache[key] = item
+        return "STORED\r\n"        
     end
 
     def add()
