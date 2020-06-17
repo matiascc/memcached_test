@@ -53,13 +53,13 @@ end
 
 describe ".replace" do
     context "given the correct parameters" do
-        it "set a value asociated to a key that don't exist" do  
+        it "set a value asociated to a key that exist" do  
             mem = Memcached.new
-            mem.replace("key", 10, 500, 20, "Data to be stored")
+            mem.set("key", 10, 500, 20, "Data to be stored")
             return_set = mem.replace("key", 10, 500, 20, "New data to be stored")
             expect(return_set).to eql("STORED\r\n")
         end
-        it "set a value asociated to a key that exist" do  
+        it "set a value asociated to a key that don't exist" do  
             mem = Memcached.new
             return_set = mem.replace("key", 10, 500, 20, "New data to be stored")
             expect(return_set).to eql("NOT_STORED\r\n")
@@ -73,13 +73,13 @@ describe ".append" do
             mem = Memcached.new
             mem.set("key", 10, 500, 20, "Data to be")
             return_set = mem.append("key", 10, 500, 20, " stored")
-            expect(return_set).to eql("STORED\r\n" )
+            expect(return_set).to eql("STORED\r\n")
         end
         it "data join correctly" do  
             mem = Memcached.new
             mem.set("key", 10, 500, 20, "Data to be")
             mem.append("key", 10, 500, 20, " stored")
-            return_data = mem.get(key)
+            return_data = mem.get("key")
             expect(return_data[4]).to eql("Data to be stored")
         end
     end
@@ -97,7 +97,7 @@ describe ".prepend" do
             mem = Memcached.new
             mem.set("key", 10, 500, 20, "to be stored")
             mem.prepend("key", 10, 500, 20, "Data ")
-            return_data = mem.get(key)
+            return_data = mem.get("key")
             expect(return_data[4]).to eql("Data to be stored")
         end
     end
