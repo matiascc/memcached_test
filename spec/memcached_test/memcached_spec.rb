@@ -16,21 +16,21 @@ describe ".get" do
             mem = Memcached.new
             mem.set("key", 10, 500, 20, "Data to be stored")
 
-            return_get = mem.get("key")
-            expect(return_get).to eql(["key", 10, 500, 20, "Data to be stored"])
+            return_get = mem.get(["key"])
+            expect(return_get).to eql([["key", 10, 500, 20, "Data to be stored"]])
         end
     end
 end
 
-describe ".multiple_get" do
+describe ".gets" do
     context "given multiple keys that exists" do
         it "get a values asociated to 2 keys" do  
             mem = Memcached.new
             mem.set("key", 10, 500, 10, "Data to be stored")
             mem.set("key2", 20, 500, 10, "Data to be stored2")
 
-            return_gets = mem.multiple_get(["key", "key2"])
-            expect(return_gets).to eql([["key", 10, 500, 10, "Data to be stored"],["key2", 20, 500, 10, "Data to be stored2"]])
+            return_gets = mem.gets(["key", "key2"])
+            expect(return_gets).to eql([["key", 10, 500, 10, 1, "Data to be stored"],["key2", 20, 500, 10, 1, "Data to be stored2"]])
         end
     end
 end
@@ -79,8 +79,8 @@ describe ".append" do
             mem = Memcached.new
             mem.set("key", 10, 500, 20, "Data to be")
             mem.append("key", 10, 500, 20, " stored")
-            return_data = mem.get("key")
-            expect(return_data[4]).to eql("Data to be stored")
+            return_data = mem.get(["key"])
+            expect(return_data[0][4]).to eql("Data to be stored")
         end
     end
 end
@@ -97,8 +97,8 @@ describe ".prepend" do
             mem = Memcached.new
             mem.set("key", 10, 500, 20, "to be stored")
             mem.prepend("key", 10, 500, 20, "Data ")
-            return_data = mem.get("key")
-            expect(return_data[4]).to eql("Data to be stored")
+            return_data = mem.get(["key"])
+            expect(return_data[0][4]).to eql("Data to be stored")
         end
     end
 end

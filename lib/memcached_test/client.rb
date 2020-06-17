@@ -6,10 +6,10 @@ class Client
       @request_object = send_request
       @response_object = listen_response
 
-      @request_object.join # will send the request to server
-      @response_object.join # will receive response from server
+      @request_object.join 
+      @response_object.join 
    end
- 
+
    def send_request
       puts "Please enter a command:"
       begin
@@ -21,7 +21,7 @@ class Client
          end
       end
    end
- 
+
    def listen_response
       begin
          Thread.new do

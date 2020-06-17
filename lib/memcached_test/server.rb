@@ -12,37 +12,66 @@ class Server
    def run
       loop{
          client_connection = @server_socket.accept
-         Thread.start(client_connection) do |conn|
+         #foreach client that connects
+         Thread.start(client_connection) do |conn|    
                puts "Connection established #{conn}"
                
-               while input = conn.gets.chomp #.to_sym
+               while input = conn.gets.chomp
                   command = input.split(' ')[0] 
                   parameters = input.split(' ').drop(1)
                   
                   case command
                   when "get"
-                     resultado = @memcached.get(parameters[0])
-                     if resultado != nil
-                           conn.puts "Key: #{resultado[0]}, Flags: #{resultado[1]}, Exptime: #{resultado[2]}, Bytes: #{resultado[3]}, Data: #{resultado[4]}"
+                     resultado = @memcached.get(parameters)
+                     if resultado != []
+                        resultados.each do |resultado|
+                           conn.puts "VALUE #{resultado[0]} #{resultado[1]} #{resultado[3]}\r\n#{resultado[4]}\r\n"
+                        end
+                        conn.puts "END\r\n"
                      else
-                           conn.puts "Couldn't find value"
+                        conn.puts "Couldn't find any value"
                      end
+
                   when "gets"
                      resultados = @memcached.multiple_get(parameters)
                      if resultado != []
                            resultados.each do |resultado|
-                              conn.puts "Key: #{resultado[0]}, Flags: #{resultado[1]}, Exptime: #{resultado[2]}, Bytes: #{resultado[3]}, Data: #{resultado[4]}"
+                              conn.puts "VALUE #{resultado[0]} #{resultado[1]} #{resultado[3]} #{resultado[4]}\r\n#{resultado[5]}\r\n"
                            end
+                           conn.puts "END\r\n"
                      else
                            conn.puts "Couldn't find any value"
                      end
+
                   when "set"
-                     @memcached.set(parameters[0], parameters[1], parameters[2], parameters[3], parameters.slice(4, parameters.length).join(' '))
-                     conn.puts "Success on set"
+                     #if parameters[4] == noreply: parameters.slice(4, parameters.length) && delete conn.puts
+                     response = @memcached.set(parameters[0], parameters[1], parameters[2], parameters[3], parameters.slice(4, parameters.length).join(' '))
+                     #if error: response = "ERROR\r\n"
+                     conn.puts response
+
                   when "add"
-                     conn.puts "You're doing a add, and saying #{parameters.join(' ')}"
+                     #if parameters[4] == noreply: parameters.slice(4, parameters.length) && delete conn.puts
+                     response = @memcached.add(parameters[0], parameters[1], parameters[2], parameters[3], parameters.slice(4, parameters.length).join(' '))
+                     conn.puts response
+
+                  when "replace"
+                     #if parameters[4] == noreply: parameters.slice(4, parameters.length) && delete conn.puts                     
+                     response = @memcached.replace(parameters[0], parameters[1], parameters[2], parameters[3], parameters.slice(4, parameters.length).join(' '))
+                     conn.puts response
+
+                  when "append"
+                     #if parameters[4] == noreply: parameters.slice(4, parameters.length) && delete conn.puts
+                     response = @memcached.append(parameters[0], parameters[1], parameters[2], parameters[3], parameters.slice(4, parameters.length).join(' '))
+                     conn.puts response
+
+                  when "prepend"
+                     #if parameters[4] == noreply: parameters.slice(4, parameters.length) && delete conn.puts
+                     response = @memcached.prepend(parameters[0], parameters[1], parameters[2], parameters[3], parameters.slice(4, parameters.length).join(' '))
+                     conn.puts response
+
                   when "quit"
                      break
+
                   else
                      conn.puts "Invalid command, please retry"
                   end
