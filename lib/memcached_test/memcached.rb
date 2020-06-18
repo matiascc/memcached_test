@@ -99,4 +99,22 @@ class Memcached
             return "NOT_FOUND\r\n"
         end
     end
+
+    def delete(key)
+        if @cache.key?(key)
+            @cache.delete(key)
+            return true
+        else
+            return nil
+        end        
+    end
+
+    def flush_all()
+        @cache.each_key do |key|
+            if Time.Now > @cache[key].exptime
+                self.delete(key)
+            end
+        end
+        return "OK\r\n"
+    end
 end

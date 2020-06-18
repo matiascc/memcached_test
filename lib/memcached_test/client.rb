@@ -37,6 +37,6 @@ class Client
    end
 end
  
- socket = TCPSocket.open( "localhost", 11211 )
- Client.new( socket )
+socket = TCPSocket.open( "localhost", 11211 )
+Client.new( socket )
 
