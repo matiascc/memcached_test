@@ -8,9 +8,14 @@ class Memcached_item
 
     def initialize(flags, exptime, bytes, cas, data)
         @flags = flags
-        @exptime = exptime
+        @exptime = set_exptime(exptime)
         @bytes = bytes
         @cas = cas
         @data = data
     end
+    
+    def set_exptime(exptime)
+        return exptime
+    end
+
 end

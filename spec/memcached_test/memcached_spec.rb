@@ -2,9 +2,15 @@ require 'memcached_test/memcached'
 
 describe ".set" do
     context "given the correct parameters" do
-        it "set a value asociated to a key" do  
+        it "set a value asociated to a key that not exist" do  
             mem = Memcached.new
             return_set = mem.set("key", 10, 500, 20, "Data to be stored")
+            expect(return_set).to eql("STORED\r\n" )
+        end
+        it "set a value asociated to a key that exist" do  
+            mem = Memcached.new
+            mem.set("key", 10, 500, 20, "Data to be stored")
+            return_set = mem.set("key", 10, 500, 20, "New data to be stored")
             expect(return_set).to eql("STORED\r\n" )
         end
     end
@@ -20,6 +26,13 @@ describe ".get" do
             expect(return_get).to eql([["key", 10, 500, 20, "Data to be stored"]])
         end
     end
+    context "given a key that not exist" do
+        it "get an empty array" do  
+            mem = Memcached.new
+            return_get = mem.get(["key"])
+            expect(return_get).to eql([])
+        end
+    end
 end
 
 describe ".gets" do
@@ -31,6 +44,13 @@ describe ".gets" do
 
             return_gets = mem.gets(["key", "key2"])
             expect(return_gets).to eql([["key", 10, 500, 10, 1, "Data to be stored"],["key2", 20, 500, 10, 1, "Data to be stored2"]])
+        end
+    end
+    context "given a key that not exist" do
+        it "get an empty array" do  
+            mem = Memcached.new
+            return_gets = mem.gets(["key"])
+            expect(return_gets).to eql([])
         end
     end
 end
@@ -68,7 +88,7 @@ describe ".replace" do
 end
 
 describe ".append" do
-    context "given the correct parameters" do
+    context "given a key that exist" do
         it "correctly make the operation" do  
             mem = Memcached.new
             mem.set("key", 10, 500, 20, "Data to be")
@@ -83,10 +103,17 @@ describe ".append" do
             expect(return_data[0][4]).to eql("Data to be stored")
         end
     end
+    context "given a key that not exist" do
+        it "return not stored" do
+            mem = Memcached.new
+            return_set = mem.append("key", 10, 500, 20, " stored")
+            expect(return_set).to eql("NOT_STORED\r\n")
+        end
+    end
 end
 
 describe ".prepend" do
-    context "given the correct parameters" do
+    context "given a key that exist" do
         it "correctly make the operation" do  
             mem = Memcached.new
             mem.set("key", 10, 500, 20, "to be stored")
@@ -99,6 +126,13 @@ describe ".prepend" do
             mem.prepend("key", 10, 500, 20, "Data ")
             return_data = mem.get(["key"])
             expect(return_data[0][4]).to eql("Data to be stored")
+        end
+    end
+    context "given a key that not exist" do
+        it "return not stored" do
+            mem = Memcached.new
+            return_set = mem.prepend("key", 10, 500, 20, " stored")
+            expect(return_set).to eql("NOT_STORED\r\n")
         end
     end
 end
