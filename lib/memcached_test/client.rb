@@ -1,4 +1,4 @@
-require 'socket'            
+require 'socket'    
 
 class Client
    def initialize(socket)
