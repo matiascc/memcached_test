@@ -4,32 +4,33 @@ require_relative 'memcached'
 class Server
    def initialize(socket_address, socket_port)
       @server_socket = TCPServer.open(socket_address, socket_port)
-      puts 'Starting server.........'
       @memcached = Memcached.new   
       @break_condition = false
-      self.run
-      self.purge_expired_keys(5)
    end
 
    def run
-      while !@break_condition
+      loop{
          client_connection = @server_socket.accept
          #foreach client that connects
          Thread.start(client_connection) do |conn|    
                puts "Connection established #{conn}"
                
-               while input = conn.gets.chomp
+               while input = conn.gets
+                  input = input.chomp
+
                   command = input.split(' ')[0] 
                   parameters = input.split(' ').drop(1)
                   
                   self.process_entry(command, parameters, conn)
+                  break if @break_condition
                end
 
+               puts "Connection closed #{conn}"
                conn.puts "Closing connection"
                conn.flush
                conn.close
          end
-      end
+      }
    end
 
    def process_entry(command, parameters, client)
@@ -45,7 +46,7 @@ class Server
             client.puts ("VALUE #{resultados[0]} #{resultados[1]} #{resultados[3]}\r\n#{resultados[4]}\r\n")
             client.puts ("END\r\n")
          else
-            client.puts ("Couldn't find any value")
+            client.puts ("NOT_FOUND\r\n")
          end
 
       when "gets"
@@ -59,7 +60,7 @@ class Server
             client.puts ("VALUE #{resultados[0]} #{resultados[1]} #{resultados[3]} #{resultado[4]}\r\n#{resultados[5]}\r\n")
             client.puts ("END\r\n")
          else
-            client.append ("Couldn't find any value")
+            client.append ("NOT_FOUND\r\n")
          end
 
       when "set"
@@ -124,12 +125,10 @@ class Server
 
    def purge_expired_keys(interval_time)
       loop{
-         sleep(interval)
-         @memc.check_exptimes()          
+         sleep(interval_time)
+         @memcached.flush_all()          
          puts("----------- Expired keys deleted -----------")
       }
    end
 
 end
-
-server = Server.new('localhost', 11211)

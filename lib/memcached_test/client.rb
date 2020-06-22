@@ -1,13 +1,8 @@
 require 'socket'    
 
 class Client
-   def initialize(socket)
-      @socket = socket
-      @request_object = send_request
-      @response_object = listen_response
-
-      @request_object.join 
-      @response_object.join 
+   def initialize(host, port)
+      @socket = TCPSocket.open(host, port)
    end
 
    def send_request
@@ -15,8 +10,7 @@ class Client
       begin
          Thread.new do
                loop do
-                  message = $stdin.gets.chomp
-                  @socket.puts message
+                  @socket.puts $stdin.gets.chomp
                end
          end
       end
@@ -27,7 +21,7 @@ class Client
          Thread.new do
                loop do
                   response = @socket.gets.chomp
-                  puts "#{response}"
+                  puts "> #{response}"
                   if response.eql?'quit'
                   @socket.close
                   end
@@ -35,8 +29,72 @@ class Client
          end
       end
    end
+
+   def set(key, flags, exptime, bytes, data)
+      @socket.puts("set #{key} #{flags} #{exptime} #{bytes} #{data}")  
+      return @socket.gets()
+   end
+
+   def get(*keys)
+      @socket.puts("get #{keys.join(' ')}")
+      items = []
+
+      loop do
+         response = @socket.gets()
+         items.append response
+         case response
+            when "NOT_FOUND\r\n"
+               break
+            when "END\r\n"
+               break
+         end
+      end
+
+      return items
+   end
+
+   def gets(*keys)
+      @socket.puts("gets #{keys.join(' ')}")
+      items = []
+
+      loop do
+         response = @socket.gets()
+         items.append response
+         case response
+            when "NOT_FOUND\r\n"
+               break
+            when "END\r\n"
+               break
+         end
+      end
+
+      return items
+   end
+
+   def add(key, flags, exptime, bytes, data)
+      @socket.puts("add #{key} #{flags} #{exptime} #{bytes} #{data}")  
+      return @socket.gets()
+   end
+
+   def replace(key, flags, exptime, bytes, data)
+      @socket.puts("replace #{key} #{flags} #{exptime} #{bytes} #{data}")  
+      return @socket.gets()
+   end
+
+   def append(key, flags, exptime, bytes, data)
+      @socket.puts("append #{key} #{flags} #{exptime} #{bytes} #{data}")  
+      return @socket.gets()
+   end
+
+   def prepend(key, flags, exptime, bytes, data)
+      @socket.puts("prepend #{key} #{flags} #{exptime} #{bytes} #{data}")  
+      return @socket.gets()
+   end
+
+   def cas(key, flags, exptime, bytes, cas, data)
+      @socket.puts("cas #{key} #{flags} #{exptime} #{bytes} #{cas} #{data}")  
+      return @socket.gets()
+   end
+
 end
- 
-socket = TCPSocket.open( "localhost", 11211 )
-Client.new( socket )
 

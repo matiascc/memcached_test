@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+require_relative '../lib/memcached_test/client.rb'
+
+cli = Client.new( ARGV[0], ARGV[1] )
+
+request_object = cli.listen_response
+response_object = cli.send_request
+      
+request_object.join 
+response_object.join 

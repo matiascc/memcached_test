@@ -1,9 +1,10 @@
 require_relative 'memcached_item'
+require 'concurrent'
 
 class Memcached
     
     def initialize
-        @cache = Hash.new
+        @cache = Concurrent::Hash.new
     end
 
     def get(keys)
@@ -111,7 +112,7 @@ class Memcached
 
     def flush_all()
         @cache.each_key do |key|
-            if Time.Now > @cache[key].exptime
+            if Time.now() > @cache[key].exptime
                 self.delete(key)
             end
         end
