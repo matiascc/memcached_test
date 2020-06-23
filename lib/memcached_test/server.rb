@@ -66,7 +66,8 @@ class Server
          noreply = false
          if parameters[4] == 'noreply'
             noreply = true
-            parameters.drop(4)
+            puts 1
+            parameters.delete('noreply')
          end
 
          response = @memcached.set(parameters[0], parameters[1], parameters[2], parameters[3], parameters.slice(4, parameters.length).join(' '))
@@ -76,7 +77,7 @@ class Server
          noreply = false
          if parameters[4] == 'noreply'
             noreply = true
-            parameters.drop(4)
+            parameters.delete('noreply')
          end
          
          response = @memcached.add(parameters[0], parameters[1], parameters[2], parameters[3], parameters.slice(4, parameters.length).join(' '))
@@ -86,7 +87,7 @@ class Server
          noreply = false
          if parameters[4] == 'noreply'
             noreply = true
-            parameters.drop(4)
+            parameters.delete('noreply')
          end
 
          response = @memcached.replace(parameters[0], parameters[1], parameters[2], parameters[3], parameters.slice(4, parameters.length).join(' '))
@@ -96,7 +97,7 @@ class Server
          noreply = false
          if parameters[4] == 'noreply'
             noreply = true
-            parameters.drop(4)
+            parameters.delete('noreply')
          end
 
          response = @memcached.append(parameters[0], parameters[1], parameters[2], parameters[3], parameters.slice(4, parameters.length).join(' '))
@@ -106,7 +107,7 @@ class Server
          noreply = false
          if parameters[4] == 'noreply'
             noreply = true
-            parameters.drop(4)
+            parameters.delete('noreply')
          end
 
          response = @memcached.prepend(parameters[0], parameters[1], parameters[2], parameters[3], parameters.slice(4, parameters.length).join(' '))
@@ -116,7 +117,7 @@ class Server
          noreply = false
          if parameters[5] == 'noreply'
             noreply = true
-            parameters.drop(5)
+            parameters.delete('noreply')
          end
 
          response = @memcached.cas(parameters[0], parameters[1], parameters[2], parameters[3], parameters[4], parameters.slice(5, parameters.length).join(' '))
