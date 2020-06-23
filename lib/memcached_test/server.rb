@@ -4,8 +4,7 @@ require_relative 'memcached'
 class Server
    def initialize(socket_address, socket_port)
       @server_socket = TCPServer.open(socket_address, socket_port)
-      @memcached = Memcached.new   
-      @break_condition = false
+      @memcached = Memcached.new  
    end
 
    def run
@@ -21,8 +20,8 @@ class Server
                   command = input.split(' ')[0] 
                   parameters = input.split(' ').drop(1)
                   
+                  break if command == 'quit'
                   self.process_entry(command, parameters, conn)
-                  break if @break_condition
                end
 
                puts "Connection closed #{conn}"
@@ -64,59 +63,68 @@ class Server
          end
 
       when "set"
+         noreply = false
          if parameters[4] == 'noreply'
-            @memcached.set(parameters[0], parameters[1], parameters[2], parameters[3], parameters.slice(5, parameters.length))
-         else
-            response = @memcached.set(parameters[0], parameters[1], parameters[2], parameters[3], parameters.slice(4, parameters.length).join(' '))
-            client.puts response
+            noreply = true
+            parameters.drop(4)
          end
+
+         response = @memcached.set(parameters[0], parameters[1], parameters[2], parameters[3], parameters.slice(4, parameters.length).join(' '))
+         client.puts response unless noreply
 
       when "add"
+         noreply = false
          if parameters[4] == 'noreply'
-            @memcached.add(parameters[0], parameters[1], parameters[2], parameters[3], parameters.slice(5, parameters.length))
-         else
-            response = @memcached.add(parameters[0], parameters[1], parameters[2], parameters[3], parameters.slice(4, parameters.length).join(' '))
-            client.puts response
+            noreply = true
+            parameters.drop(4)
          end
+         
+         response = @memcached.add(parameters[0], parameters[1], parameters[2], parameters[3], parameters.slice(4, parameters.length).join(' '))
+         client.puts response unless noreply
 
       when "replace"
+         noreply = false
          if parameters[4] == 'noreply'
-            @memcached.replace(parameters[0], parameters[1], parameters[2], parameters[3], parameters.slice(5, parameters.length)) 
-         else
-            response = @memcached.replace(parameters[0], parameters[1], parameters[2], parameters[3], parameters.slice(4, parameters.length).join(' '))
-            client.puts response
+            noreply = true
+            parameters.drop(4)
          end
+
+         response = @memcached.replace(parameters[0], parameters[1], parameters[2], parameters[3], parameters.slice(4, parameters.length).join(' '))
+         client.puts response unless noreply
 
       when "append"
+         noreply = false
          if parameters[4] == 'noreply'
-            @memcached.append(parameters[0], parameters[1], parameters[2], parameters[3], parameters.slice(5, parameters.length)) 
-         else
-            response = @memcached.append(parameters[0], parameters[1], parameters[2], parameters[3], parameters.slice(4, parameters.length).join(' '))
-            client.puts response
+            noreply = true
+            parameters.drop(4)
          end
+
+         response = @memcached.append(parameters[0], parameters[1], parameters[2], parameters[3], parameters.slice(4, parameters.length).join(' '))
+         client.puts response unless noreply
 
       when "prepend"
+         noreply = false
          if parameters[4] == 'noreply'
-            @memcached.prepend(parameters[0], parameters[1], parameters[2], parameters[3], parameters.slice(5, parameters.length)) 
-         else
-            response = @memcached.prepend(parameters[0], parameters[1], parameters[2], parameters[3], parameters.slice(4, parameters.length).join(' '))
-            client.puts response
+            noreply = true
+            parameters.drop(4)
          end
 
+         response = @memcached.prepend(parameters[0], parameters[1], parameters[2], parameters[3], parameters.slice(4, parameters.length).join(' '))
+         client.puts response unless noreply
+
       when "cas"
+         noreply = false
          if parameters[5] == 'noreply'
-            @memcached.cas(parameters[0], parameters[1], parameters[2], parameters[3], parameters[4], parameters.slice(6, parameters.length)) 
-         else
-            response = @memcached.cas(parameters[0], parameters[1], parameters[2], parameters[3], parameters[4], parameters.slice(5, parameters.length).join(' '))
-            client.puts response
+            noreply = true
+            parameters.drop(5)
          end
+
+         response = @memcached.cas(parameters[0], parameters[1], parameters[2], parameters[3], parameters[4], parameters.slice(5, parameters.length).join(' '))
+         client.puts response unless noreply
 
       when "flush_all"
          response = @memcached.flush_all()
          client.puts response unless parameters[0] == 'noreply'
-
-      when "quit"
-         @break_condition = true
 
       else
          client.puts "Invalid command, please retry"

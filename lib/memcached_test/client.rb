@@ -12,6 +12,10 @@ class Client
                loop do
                   @socket.puts $stdin.gets.chomp
                end
+            rescue IOError => e
+               puts e.message
+               # e.backtrace
+               @socket.close
          end
       end
    end
@@ -22,17 +26,18 @@ class Client
                loop do
                   response = @socket.gets.chomp
                   puts "> #{response}"
-                  if response.eql?'quit'
-                  @socket.close
+
+                  if response == 'Closing connection'
+                     @socket.close
+                     break
                   end
                end
+            rescue IOError => e
+               puts e.message
+               # e.backtrace
+               @socket.close
          end
       end
-   end
-
-   def set(key, flags, exptime, bytes, data)
-      @socket.puts("set #{key} #{flags} #{exptime} #{bytes} #{data}")  
-      return @socket.gets()
    end
 
    def get(*keys)
@@ -70,29 +75,34 @@ class Client
 
       return items
    end
+   
+   def set(key, flags, exptime, bytes, noreply = '', data)
+      @socket.puts("set #{key} #{flags} #{exptime} #{bytes} #{noreply} #{data}")  
+      return @socket.gets() unless noreply == 'noreply'
+   end
 
-   def add(key, flags, exptime, bytes, data)
-      @socket.puts("add #{key} #{flags} #{exptime} #{bytes} #{data}")  
+   def add(key, flags, exptime, bytes, noreply = '', data)
+      @socket.puts("add #{key} #{flags} #{exptime} #{bytes} #{noreply} #{data}")  
       return @socket.gets()
    end
 
-   def replace(key, flags, exptime, bytes, data)
-      @socket.puts("replace #{key} #{flags} #{exptime} #{bytes} #{data}")  
+   def replace(key, flags, exptime, bytes, noreply = '', data)
+      @socket.puts("replace #{key} #{flags} #{exptime} #{bytes} #{noreply} #{data}")  
       return @socket.gets()
    end
 
-   def append(key, flags, exptime, bytes, data)
-      @socket.puts("append #{key} #{flags} #{exptime} #{bytes} #{data}")  
+   def append(key, flags, exptime, bytes, noreply = '', data)
+      @socket.puts("append #{key} #{flags} #{exptime} #{bytes} #{noreply} #{data}")  
       return @socket.gets()
    end
 
-   def prepend(key, flags, exptime, bytes, data)
-      @socket.puts("prepend #{key} #{flags} #{exptime} #{bytes} #{data}")  
+   def prepend(key, flags, exptime, bytes, noreply = '', data)
+      @socket.puts("prepend #{key} #{flags} #{exptime} #{bytes} #{noreply} #{data}")  
       return @socket.gets()
    end
 
-   def cas(key, flags, exptime, bytes, cas, data)
-      @socket.puts("cas #{key} #{flags} #{exptime} #{bytes} #{cas} #{data}")  
+   def cas(key, flags, exptime, bytes, cas, noreply = '', data)
+      @socket.puts("cas #{key} #{flags} #{exptime} #{bytes} #{cas} #{noreply} #{data}")  
       return @socket.gets()
    end
 
