@@ -1,8 +1,8 @@
 require 'memcached_test/memcached'
 
-describe Memcached do
+describe MemcachedTest::Memcached do
     before(:example) do
-        @mem = Memcached.new
+        @mem = MemcachedTest::Memcached.new
     end
 
     describe ".set" do
@@ -70,8 +70,7 @@ describe Memcached do
                 return_set = @mem.add("key", 10, 500, 20, "Data to be stored")
                 expect(return_set).to eql("STORED\r\n")
             end
-            it "set a value asociated to a key that exists" do  
-                @mem = Memcached.new
+            it "set a value asociated to a key that exists" do
                 @mem.add("key", 10, 500, 20, "Data to be stored")
                 return_set = @mem.add("key", 10, 500, 20, "Data to be stored")
                 expect(return_set).to eql("NOT_STORED\r\n")
@@ -109,7 +108,6 @@ describe Memcached do
         end
         context "given a key that doesn't exist" do
             it "return not stored" do
-                @mem = Memcached.new
                 return_set = @mem.append("key", 10, 500, 20, " stored")
                 expect(return_set).to eql("NOT_STORED\r\n")
             end

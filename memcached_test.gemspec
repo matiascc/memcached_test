@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
     spec.name        = 'memcached_test'
-    spec.version     = '0.0.2'
+    spec.version     = MemcachedTest::VERSION
     spec.authors     = ['Matias Caporale']
     spec.email       = 'matiascaporale9@gmail.com'
     spec.summary     = 'Test of a memcached server'
