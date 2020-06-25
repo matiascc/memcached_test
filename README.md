@@ -1,6 +1,6 @@
 # MemcachedTest
 A test of Memcached server implementation, using TCP/IP socket.
-This was done as part of a coding challenge.
+This was done as part of a [coding challenge](https://github.com/moove-it/coding-challenges/blob/master/ruby.md).
 
 ## Installation
 
@@ -10,11 +10,9 @@ gem install memcached_test
 
 ## Usage
 
-#### Memcached
-A class that manages the storage and retrieval of the data in the cache.
-
 #### Server
 A class that creates a TCPServer to connect to and interact with the Memcached class to send or request the data.
+The Memcached class manages the storage and retrieval of the data in the cache, complying with the memcached protocol.
 
 ```ruby
 require 'memcached_test'
@@ -26,7 +24,7 @@ main = Thread.new {
 }
 
 #Executes the process that purge expired keys every 10 seconds
-gc = Thread.new {
+Thread.new {
     server.purge_expired_keys(10)
 }
 

@@ -9,7 +9,7 @@ main = Thread.new {
     server.run()
 }
 
-gc = Thread.new {
+Thread.new {
     server.purge_expired_keys(10)
 }
 
