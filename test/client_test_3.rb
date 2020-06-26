@@ -7,13 +7,21 @@ class Client_test_3
     end
 
     def test()
-        response_1 = @cli.add('test', 10, 100, 10, 'Data')
-        response_2 = @cli.replace('test', 10, 100, 10, "New data")
-        response_3 = @cli.get('test')
+        response_1 = @cli.add('test_1', 10, 100, 10, 'noreply', 'Data')
+        response_2 = @cli.replace('test_1', 10, 100, 10, 'noreply', "New data")
+        response_3 = @cli.add('test_2', 10, 100, 10, 'Data')
+        response_4 = @cli.cas('test_2', 10, 100, 10, 1, "New data")
+        response_5 = @cli.get('test_1')
+        response_6 = @cli.gets('test_2')
 
         puts response_1
         puts response_2
-        response_3.each do |item|
+        puts response_3
+        puts response_4
+        response_5.each do |item|
+            puts item
+        end
+        response_6.each do |item|
             puts item
         end
     end

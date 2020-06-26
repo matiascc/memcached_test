@@ -90,7 +90,7 @@ module MemcachedTest
 
         def cas(key, flags, exptime, bytes, cas, data)
             if @cache.key?(key) 
-                if @cache[key].cas == cas
+                if @cache[key].cas == cas.to_i
                     item = Memcached_item.new(flags, exptime, bytes, cas, data)
                     @cache[key] = item
                     return "STORED\r\n"

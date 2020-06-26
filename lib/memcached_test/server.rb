@@ -4,6 +4,8 @@ require_relative 'commands_format'
  
 module MemcachedTest
    class Server
+      attr_reader :server_socket
+
       def initialize(socket_address, socket_port)
          @server_socket = TCPServer.open(socket_address, socket_port)
          @memcached = Memcached.new  
@@ -12,7 +14,6 @@ module MemcachedTest
       def run
          loop{
             client_connection = @server_socket.accept
-            #foreach client that connects
             Thread.start(client_connection) do |conn|    
                   puts "Connection established #{conn}"
                   
@@ -60,73 +61,37 @@ module MemcachedTest
                client.puts ("VALUE #{resultados[0]} #{resultados[1]} #{resultados[3]} #{resultado[4]}\r\n#{resultados[5]}\r\n")
                client.puts ("END\r\n")
             else
-               client.append ("NOT_FOUND\r\n")
+               client.puts ("NOT_FOUND\r\n")
             end
 
          when Commands_format.set
-            key = $~['key']
-            flags = $~['flags']
-            exptime = $~['exptime']
-            bytes = $~['bytes']
-            noreply = !$~['noreply'].nil?
-            data = $~['data']
-
+            key, flags, exptime, bytes, noreply, data = self.pass_parameters($~)
             response = @memcached.set(key, flags, exptime, bytes, data)
             client.puts response unless noreply
 
          when Commands_format.add
-            key = $~['key']
-            flags = $~['flags']
-            exptime = $~['exptime']
-            bytes = $~['bytes']
-            noreply = !$~['noreply'].nil?
-            data = $~['data']
-            
+            key, flags, exptime, bytes, noreply, data = self.pass_parameters($~)
             response = @memcached.add(key, flags, exptime, bytes, data)
             client.puts response unless noreply
 
          when Commands_format.replace
-            key = $~['key']
-            flags = $~['flags']
-            exptime = $~['exptime']
-            bytes = $~['bytes']
-            noreply = !$~['noreply'].nil?
-            data = $~['data']
-
+            key, flags, exptime, bytes, noreply, data = self.pass_parameters($~)
             response = @memcached.replace(key, flags, exptime, bytes, data)
             client.puts response unless noreply
 
          when Commands_format.append
-            key = $~['key']
-            flags = $~['flags']
-            exptime = $~['exptime']
-            bytes = $~['bytes']
-            noreply = !$~['noreply'].nil?
-            data = $~['data']
-
+            key, flags, exptime, bytes, noreply, data = self.pass_parameters($~)
             response = @memcached.append(key, flags, exptime, bytes, data)
             client.puts response unless noreply
 
          when Commands_format.prepend
-            key = $~['key']
-            flags = $~['flags']
-            exptime = $~['exptime']
-            bytes = $~['bytes']
-            noreply = !$~['noreply'].nil?
-            data = $~['data']
-
+            key, flags, exptime, bytes, noreply, data = self.pass_parameters($~)
             response = @memcached.prepend(key, flags, exptime, bytes, data)
             client.puts response unless noreply
 
          when Commands_format.cas
-            key = $~['key']
-            flags = $~['flags']
-            exptime = $~['exptime']
-            bytes = $~['bytes']
+            key, flags, exptime, bytes, noreply, data = self.pass_parameters($~)
             cas = $~['cas']
-            noreply = !$~['noreply'].nil?
-            data = $~['data']
-
             response = @memcached.cas(key, flags, exptime, bytes, cas, data)
             client.puts response unless noreply
 
@@ -147,5 +112,14 @@ module MemcachedTest
          }
       end
 
+      def pass_parameters(reg_exp)
+         key = reg_exp['key']
+         flags = reg_exp['flags']
+         exptime = reg_exp['exptime']
+         bytes = reg_exp['bytes']
+         noreply = !reg_exp['noreply'].nil?
+         data = reg_exp['data']
+         return key, flags, exptime, bytes, noreply, data
+      end
    end
 end

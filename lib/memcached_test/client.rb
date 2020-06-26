@@ -2,6 +2,8 @@ require 'socket'
 
 module MemcachedTest
    class Client
+      attr_reader :socket
+      
       def initialize(host, port)
          @socket = TCPSocket.open(host, port)
       end
@@ -90,7 +92,7 @@ module MemcachedTest
          else
             @socket.puts("add #{key} #{flags} #{exptime} #{bytes} #{noreply} #{data}")  
          end
-         return @socket.gets()
+         return @socket.gets() unless noreply == 'noreply'
       end
 
       def replace(key, flags, exptime, bytes, noreply = '', data)
@@ -99,7 +101,7 @@ module MemcachedTest
          else
             @socket.puts("replace #{key} #{flags} #{exptime} #{bytes} #{noreply} #{data}")  
          end
-         return @socket.gets()
+         return @socket.gets() unless noreply == 'noreply'
       end
 
       def append(key, flags, exptime, bytes, noreply = '', data)
@@ -108,7 +110,7 @@ module MemcachedTest
          else
             @socket.puts("append #{key} #{flags} #{exptime} #{bytes} #{noreply} #{data}")  
          end 
-         return @socket.gets()
+         return @socket.gets() unless noreply == 'noreply'
       end
 
       def prepend(key, flags, exptime, bytes, noreply = '', data)
@@ -117,7 +119,7 @@ module MemcachedTest
          else
             @socket.puts("prepend #{key} #{flags} #{exptime} #{bytes} #{noreply} #{data}")  
          end 
-         return @socket.gets()
+         return @socket.gets() unless noreply == 'noreply'
       end
 
       def cas(key, flags, exptime, bytes, cas, noreply = '', data)
@@ -126,7 +128,7 @@ module MemcachedTest
          else
             @socket.puts("cas #{key} #{flags} #{exptime} #{bytes} #{cas} #{noreply} #{data}") 
          end
-         return @socket.gets()
+         return @socket.gets() unless noreply == 'noreply'
       end
 
    end

@@ -14,7 +14,7 @@ module MemcachedTest
         define :append, /^append (?<key>\w+) (?<flags>\d+) (?<exptime>\d+) (?<bytes>\d+)(?<noreply> noreply)? (?<data>(\w|[ ])+)/
         define :prepend, /^prepend (?<key>\w+) (?<flags>\d+) (?<exptime>\d+) (?<bytes>\d+)(?<noreply> noreply)? (?<data>(\w|[ ])+)/
     
-        define :cas, /^cas (?<key>(\w)+) (?<flags>\d+) (?<exptime>\d+) (?<bytes>\d+) (?<cas_id>\d+)(?<noreply> noreply)? (?<data>(\w|[ ])+)/
+        define :cas, /^cas (?<key>(\w)+) (?<flags>\d+) (?<exptime>\d+) (?<bytes>\d+) (?<cas>\d+)(?<noreply> noreply)? (?<data>(\w|[ ])+)/
 
         define :flush_all, /^flush_all(?<noreply> noreply)?/
     end
