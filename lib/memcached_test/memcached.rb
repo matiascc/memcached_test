@@ -36,7 +36,7 @@ module MemcachedTest
 
         def set(key, flags, exptime, bytes, data)
             if @cache.key?(key)
-                item = Memcached_item.new(flags, exptime, bytes, @cache[key].cas + 1, data)
+                item = Memcached_item.new(flags, exptime, bytes, @cache[key].cas.to_i + 1, data)
                 @cache[key] = item
                 return "STORED\r\n" 
             else
