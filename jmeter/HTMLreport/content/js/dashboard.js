@@ -173,7 +173,7 @@ $(document).ready(function() {
     });
 
     // Creates APDEX table
-    createTable($("#apdexTable"), {"supportsControllersDiscrimination": true, "overall": {"data": [0.9994623655913979, 500, 1500, "Total"], "isController": false}, "titles": ["Apdex", "T (Toleration threshold)", "F (Frustration threshold)", "Label"], "items": [{"data": [0.9994623655913979, 500, 1500, "TCP Sampler"], "isController": false}]}, function(index, item){
+    createTable($("#apdexTable"), {"supportsControllersDiscrimination": true, "overall": {"data": [1.0, 500, 1500, "Total"], "isController": false}, "titles": ["Apdex", "T (Toleration threshold)", "F (Frustration threshold)", "Label"], "items": [{"data": [1.0, 500, 1500, "TCP Sampler"], "isController": false}]}, function(index, item){
         switch(index){
             case 0:
                 item = item.toFixed(3);
@@ -187,7 +187,7 @@ $(document).ready(function() {
     }, [[0, 0]], 3);
 
     // Create statistics table
-    createTable($("#statisticsTable"), {"supportsControllersDiscrimination": true, "overall": {"data": ["Total", 1860, 0, 0.0, 33.46344086021515, 3, 692, 21.0, 60.90000000000009, 84.0, 193.38999999999987, 15.651427561659052, 3.6068937675131902, 0.0], "isController": false}, "titles": ["Label", "#Samples", "KO", "Error %", "Average", "Min", "Max", "Median", "90th pct", "95th pct", "99th pct", "Transactions\/s", "Received", "Sent"], "items": [{"data": ["TCP Sampler", 1860, 0, 0.0, 33.46344086021515, 3, 692, 21.0, 60.90000000000009, 84.0, 193.38999999999987, 15.651427561659052, 3.6068937675131902, 0.0], "isController": false}]}, function(index, item){
+    createTable($("#statisticsTable"), {"supportsControllersDiscrimination": true, "overall": {"data": ["Total", 1860, 0, 0.0, 15.863978494623662, 4, 43, 15.0, 18.0, 20.949999999999818, 27.389999999999873, 15.632222549060804, 3.5325733679665503, 0.0], "isController": false}, "titles": ["Label", "#Samples", "KO", "Error %", "Average", "Min", "Max", "Median", "90th pct", "95th pct", "99th pct", "Transactions\/s", "Received", "Sent"], "items": [{"data": ["TCP Sampler", 1860, 0, 0.0, 15.863978494623662, 4, 43, 15.0, 18.0, 20.949999999999818, 27.389999999999873, 15.632222549060804, 3.5325733679665503, 0.0], "isController": false}]}, function(index, item){
         switch(index){
             // Errors pct
             case 3:

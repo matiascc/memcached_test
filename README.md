@@ -73,7 +73,10 @@ And finally try the commands in the client console.
 To test the commands execute inside the main folder: 
 ``` shell
 rspec .\spec\memcached_test\memcached_spec.rb
+rspec .\spec\memcached_test\server-client_spec.rb
 ```
+
+In the jmeter folder you can find the test plan (Test Plan.jmx). The result of executing it are already in the same folder (loadtest.csv and HTMLreport folder).
 
 ## License
 

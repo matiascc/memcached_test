@@ -65,33 +65,38 @@ module MemcachedTest
             end
 
          when Commands_format.set
-            key, flags, exptime, bytes, noreply, data = self.pass_parameters($~)
+            key, flags, exptime, bytes, noreply, cas = self.pass_parameters($~)
+            data = conn.gets.chomp
             response = @memcached.set(key, flags, exptime, bytes, data)
             client.puts response unless noreply
 
          when Commands_format.add
-            key, flags, exptime, bytes, noreply, data = self.pass_parameters($~)
+            key, flags, exptime, bytes, noreply, cas = self.pass_parameters($~)
+            data = conn.gets.chomp
             response = @memcached.add(key, flags, exptime, bytes, data)
             client.puts response unless noreply
 
          when Commands_format.replace
-            key, flags, exptime, bytes, noreply, data = self.pass_parameters($~)
+            key, flags, exptime, bytes, noreply, cas = self.pass_parameters($~)
+            data = conn.gets.chomp
             response = @memcached.replace(key, flags, exptime, bytes, data)
             client.puts response unless noreply
 
          when Commands_format.append
-            key, flags, exptime, bytes, noreply, data = self.pass_parameters($~)
-            response = @memcached.append(key, flags, exptime, bytes, data)
+            key, flags, exptime, bytes, noreply, cas = self.pass_parameters($~)
+            data = conn.gets.chomp
+            response = @memcached.append(key, bytes, data)
             client.puts response unless noreply
 
          when Commands_format.prepend
-            key, flags, exptime, bytes, noreply, data = self.pass_parameters($~)
-            response = @memcached.prepend(key, flags, exptime, bytes, data)
+            key, flags, exptime, bytes, noreply, cas = self.pass_parameters($~)
+            data = conn.gets.chomp
+            response = @memcached.prepend(key, bytes, data)
             client.puts response unless noreply
 
          when Commands_format.cas
-            key, flags, exptime, bytes, noreply, data = self.pass_parameters($~)
-            cas = $~['cas']
+            key, flags, exptime, bytes, noreply, cas = self.pass_parameters($~)
+            data = conn.gets.chomp
             response = @memcached.cas(key, flags, exptime, bytes, cas, data)
             client.puts response unless noreply
 
@@ -100,7 +105,7 @@ module MemcachedTest
             client.puts response if $~['noreply'].nil?
 
          else
-            client.puts "Invalid command, please retry"
+            client.puts "ERROR\r\n"
          end
       end
 
@@ -114,12 +119,12 @@ module MemcachedTest
 
       def pass_parameters(reg_exp)
          key = reg_exp['key']
-         flags = reg_exp['flags']
-         exptime = reg_exp['exptime']
+         flags = reg_exp['flags'] unless reg_exp['command'] == 'append' || reg_exp['command'] == 'prepend'
+         exptime = reg_exp['exptime'] unless reg_exp['command'] == 'append' || reg_exp['command'] == 'prepend'
          bytes = reg_exp['bytes']
          noreply = !reg_exp['noreply'].nil?
-         data = reg_exp['data']
-         return key, flags, exptime, bytes, noreply, data
+         cas = reg_exp['cas'] if reg_exp['command'] == 'cas'
+         return key, flags, exptime, bytes, noreply, cas, data
       end
    end
 end

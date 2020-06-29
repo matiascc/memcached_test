@@ -43,15 +43,15 @@
           <stringProp name="TCPSampler.port"></stringProp>
           <boolProp name="TCPSampler.nodelay">false</boolProp>
           <stringProp name="TCPSampler.timeout"></stringProp>
-          <stringProp name="TCPSampler.request">set test 10 10 10 Data\r\n
+          <stringProp name="TCPSampler.request">set test 10 10 4 Data\r\n
 set test2 5 2 5 Data2\r\n
-set test3 10 10 10 Data\r\n
-set test4 10 10 10 Data2\r\n
+set test3 10 10 4 Data\r\n
+set test4 10 10 5 Data2\r\n
 add test5 10 2 4 Data\r\n
-replace test5 10 10 10 Data\r\n
-prepend test 10 5 10 10 New\r\n
-append test3 10 10 10 noreply _2\r\n
-cas test2 10 10 10 1 text\r\n
+replace test5 10 2 4 Data\r\n
+prepend test 3 New\r\n
+append test3 2 noreply _2\r\n
+cas test2 5 5 4 1 text\r\n
 get test test2\r\n
 get test3 test4\r\n
 gets test5\r\n
@@ -63,15 +63,16 @@ quit
         <hashTree>
           <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
             <collectionProp name="Asserion.test_strings">
-              <stringProp name="-1834195743">VALUE test 10 10</stringProp>
+              <stringProp name="36990110">VALUE test 10</stringProp>
               <stringProp name="-1838737501">STORED</stringProp>
               <stringProp name="2122698">Data</stringProp>
               <stringProp name="68795">END</stringProp>
               <stringProp name="1287693129">Closing connection</stringProp>
               <stringProp name="65803688">Data2</stringProp>
-              <stringProp name="-1828104078">VALUE test3 10 10</stringProp>
-              <stringProp name="-940600397">VALUE test4 10 10</stringProp>
-              <stringProp name="-1645998164">VALUE test5 10 10 </stringProp>
+              <stringProp name="1147243181">VALUE test3 10</stringProp>
+              <stringProp name="-1277267935">VALUE test4 10 5</stringProp>
+              <stringProp name="-1248638785">VALUE test5 10 4</stringProp>
+              <stringProp name="37006886">VALUE test2 5</stringProp>
             </collectionProp>
             <stringProp name="Assertion.custom_message"></stringProp>
             <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>

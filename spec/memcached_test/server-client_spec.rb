@@ -19,16 +19,16 @@ describe Server do
   describe '.set' do
     context 'given the correct parameters' do
       it "set a value asociated to a key that doesn't exist" do
-          response = @client.set('test', 10, 100, 10, 'Data')
+          response = @client.set('test', 10, 100, 4, 'Data')
           expect(response).to eql("STORED\r\n")
       end
       it "set a value asociated to a key that exists" do  
-          @client.set("key", 10, 500, 20, "Data to be stored")
-          response = @client.set("key", 10, 500, 20, "New data to be stored")
+          @client.set("key", 10, 500, 17, "Data to be stored")
+          response = @client.set("key", 10, 500, 21, "New data to be stored")
           expect(response).to eql("STORED\r\n")
       end
       it "set a value but use noreply" do  
-        response = @client.set("key", 10, 500, 20, 'noreply', "Data to be stored")
+        response = @client.set("key", 10, 500, 17, 'noreply', "Data to be stored")
         expect(response).to eql(nil)
       end
     end
@@ -37,16 +37,16 @@ describe Server do
   describe '.get' do
     context 'given the correct parameters' do
       it "get value asociated to a key after a set" do
-          @client.set('test', 10, 100, 10, 'Data')
+          @client.set('test', 10, 100, 4, 'Data')
           response = @client.get('test')
-          expect(response).to eql(["VALUE test 10 10\r\n", "Data\r\n", "END\r\n"])
+          expect(response).to eql(["VALUE test 10 4\r\n", "Data\r\n", "END\r\n"])
       end
       it "get a values asociated to 2 keys" do  
-        @client.set("key", 10, 0, 10, "Data to be stored")
-        @client.set("key2", 20, 0, 10, "Data to be stored2")
+        @client.set("key", 10, 0, 17, "Data to be stored")
+        @client.set("key2", 20, 0, 18, "Data to be stored2")
 
         return_gets = @client.gets(["key", "key2"])
-        expect(return_gets).to eql(["VALUE key 10 10 1\r\n", "Data to be stored\r\n", "VALUE key2 20 10 1\r\n", "Data to be stored2\r\n", "END\r\n"])
+        expect(return_gets).to eql(["VALUE key 10 17 1\r\n", "Data to be stored\r\n", "VALUE key2 20 18 1\r\n", "Data to be stored2\r\n", "END\r\n"])
       end
     end
     context "given a key that doesn't exist" do
@@ -60,16 +60,16 @@ describe Server do
   describe '.gets' do
     context 'given the correct parameters' do
       it "gets value asociated to a key after a set" do
-          @client.set('test', 10, 100, 10, 'Data')
+          @client.set('test', 10, 100, 4, 'Data')
           response = @client.gets('test')
-          expect(response).to eql(["VALUE test 10 10 1\r\n", "Data\r\n", "END\r\n"])
+          expect(response).to eql(["VALUE test 10 4 1\r\n", "Data\r\n", "END\r\n"])
       end
       it "get a values asociated to 2 keys" do  
-          @client.set("key", 10, 0, 10, "Data to be stored")
-          @client.set("key2", 20, 0, 10, "Data to be stored2")
+          @client.set("key", 10, 0, 17, "Data to be stored")
+          @client.set("key2", 20, 0, 18, "Data to be stored2")
 
           response = @client.gets(["key", "key2"])
-          expect(response).to eql(["VALUE key 10 10 1\r\n", "Data to be stored\r\n", "VALUE key2 20 10 1\r\n", "Data to be stored2\r\n", "END\r\n"])
+          expect(response).to eql(["VALUE key 10 17 1\r\n", "Data to be stored\r\n", "VALUE key2 20 18 1\r\n", "Data to be stored2\r\n", "END\r\n"])
       end
     end
     context "given a key that doesn't exist" do
@@ -83,25 +83,25 @@ describe Server do
   describe '.add' do
     context 'given the correct parameters' do
       it "add a value asociated to a key that doesn't exist" do
-        response = @client.add('test', 10, 100, 10, 'data')
+        response = @client.add('test', 10, 100, 4, 'data')
         expect(response).to eql("STORED\r\n")
       end
       it "get value asociated to a key after an add" do
-        @client.add('test', 10, 100, 10, 'Data')
+        @client.add('test', 10, 100, 4, 'Data')
         response = @client.get('test')
-        expect(response).to eql(["VALUE test 10 10\r\n", "Data\r\n", "END\r\n"])
+        expect(response).to eql(["VALUE test 10 4\r\n", "Data\r\n", "END\r\n"])
       end
       it "add a value asociated to a key that doesn't exist" do  
-        response = @client.add("key", 10, 500, 20, "Data to be stored")
+        response = @client.add("key", 10, 500, 17, "Data to be stored")
           expect(response).to eql("STORED\r\n")
       end
       it "add a value asociated to a key that exists" do
-          @client.add("key", 10, 500, 20, "Data to be stored")
-          response = @client.add("key", 10, 500, 20, "Data to be stored")
+          @client.add("key", 10, 500, 17, "Data to be stored")
+          response = @client.add("key", 10, 500, 17, "Data to be stored")
           expect(response).to eql("NOT_STORED\r\n")
       end
       it "add a value but use noreply" do  
-        response = @client.add("key", 10, 500, 20, 'noreply', "Data to be stored")
+        response = @client.add("key", 10, 500, 17, 'noreply', "Data to be stored")
         expect(response).to eql(nil)
       end
     end
@@ -110,23 +110,23 @@ describe Server do
   describe '.replace' do
     context 'given the correct parameters' do
       it "replace a values asociated to a key" do
-        @client.set('test', 10, 100, 10, 'Data')
-        @client.replace('test', 10, 100, 10, 'New Data')
+        @client.set('test', 10, 100, 4, 'Data')
+        @client.replace('test', 10, 100, 8, 'New Data')
         response = @client.get('test')
-        expect(response).to eql(["VALUE test 10 10\r\n", "New Data\r\n", "END\r\n"])
+        expect(response).to eql(["VALUE test 10 8\r\n", "New Data\r\n", "END\r\n"])
       end
       it "replace a value asociated to a key that exists" do  
-          @client.set("key", 10, 500, 20, "Data to be stored")
-          response = @client.replace("key", 10, 500, 20, "New data to be stored")
+          @client.set("key", 10, 500, 17, "Data to be stored")
+          response = @client.replace("key", 10, 500, 21, "New data to be stored")
           expect(response).to eql("STORED\r\n")
       end
       it "replace a value asociated to a key that doesn't exist" do  
-          response = @client.replace("key", 10, 500, 20, "New data to be stored")
+          response = @client.replace("key", 10, 500, 21, "New data to be stored")
           expect(response).to eql("NOT_STORED\r\n")
       end
       it "replace a value but use noreply" do  
-        @client.set("key", 10, 500, 20, "Data to be stored")
-        response = @client.replace("key", 10, 500, 20, 'noreply', "New data to be stored")
+        @client.set("key", 10, 500, 17, "Data to be stored")
+        response = @client.replace("key", 10, 500, 21, 'noreply', "New data to be stored")
         expect(response).to eql(nil)
       end
     end
@@ -135,23 +135,23 @@ describe Server do
   describe '.prepend' do
     context 'given the correct parameters' do
       it "prepend data asociated to a key" do
-        @client.set('test', 10, 100, 10, 'data')
-        @client.prepend('test', 10, 100, 10, 'New ')
+        @client.set('test', 10, 100, 4, 'data')
+        @client.prepend('test', 4, 'New ')
         response = @client.get('test')
-        expect(response).to eql(["VALUE test 10 10\r\n", "New data\r\n", "END\r\n"])
+        expect(response).to eql(["VALUE test 10 8\r\n", "New data\r\n", "END\r\n"])
       end
       it "prepend a key that exists" do  
-          @client.set("key", 10, 500, 20, "to be stored")
-          return_set = @client.prepend("key", 10, 500, 20, "Data ")
+          @client.set("key", 10, 500, 12, "to be stored")
+          return_set = @client.prepend("key", 5, "Data ")
           expect(return_set).to eql("STORED\r\n" )
       end
       it "prepend a key that doesn't exist" do
-            return_set = @client.prepend("key", 10, 500, 20, " stored")
+            return_set = @client.prepend("key", 7, " stored")
             expect(return_set).to eql("NOT_STORED\r\n")
       end
       it "prepend a value but use noreply" do  
-        @client.set("key", 10, 500, 20, "Data to be stored")
-        response = @client.prepend("key", 10, 500, 20, 'noreply', "New data to be stored")
+        @client.set("key", 10, 500, 17, "Data to be stored")
+        response = @client.prepend("key", 21, 'noreply', "New data to be stored")
         expect(response).to eql(nil)
       end
     end
@@ -160,23 +160,23 @@ describe Server do
   describe '.append' do
     context 'given the correct parameters' do
       it "append data asociated to a key" do
-        @client.add('test', 10, 100, 10, 'New')
-        @client.append('test', 10, 100, 10, ' data')
+        @client.add('test', 10, 100, 3, 'New')
+        @client.append('test', 5, ' data')
         response = @client.get('test')
-        expect(response).to eql(["VALUE test 10 10\r\n", "New data\r\n", "END\r\n"])
+        expect(response).to eql(["VALUE test 10 8\r\n", "New data\r\n", "END\r\n"])
       end
       it "append a key that exists" do 
-          @client.set("key", 10, 500, 20, "Data to be")
-          return_set = @client.append("key", 10, 500, 20, " stored")
+          @client.set("key", 10, 500, 10, "Data to be")
+          return_set = @client.append("key", 7, " stored")
           expect(return_set).to eql("STORED\r\n")
       end
       it "append a key that doesn't exist" do
-            return_set = @client.append("key", 10, 500, 20, " stored")
+            return_set = @client.append("key", 7, " stored")
             expect(return_set).to eql("NOT_STORED\r\n")
       end
       it "append a value but use noreply" do  
         @client.set("key", 10, 500, 20, "Data to be stored")
-        response = @client.append("key", 10, 500, 20, 'noreply', "New data to be stored")
+        response = @client.append("key", 21, 'noreply', "New data to be stored")
         expect(response).to eql(nil)
       end
     end
@@ -185,34 +185,34 @@ describe Server do
   describe '.cas' do
     context 'given the correct parameters' do
       it "cas and then get a value asociated to a key that doesn't exist" do
-        @client.set("test", 10, 100, 10, "Data to be stored")
-        @client.cas('test', 10, 100, 10, 1, "New data to be stored")
+        @client.set("test", 10, 100, 17, "Data to be stored")
+        @client.cas('test', 10, 100, 21, 1, "New data to be stored")
         response = @client.gets('test')
-        expect(response).to eql(["VALUE test 10 10 1\r\n", "New data to be stored\r\n", "END\r\n"])
+        expect(response).to eql(["VALUE test 10 21 2\r\n", "New data to be stored\r\n", "END\r\n"])
       end
       it "set a value to a key that exists with a correct cas_num = 1" do  
-        @client.set("key", 10, 500, 20, "Data to be stored")
-        return_set = @client.cas("key", 10, 500, 20, 1, "New data to be stored")
+        @client.set("key", 10, 500, 17, "Data to be stored")
+        return_set = @client.cas("key", 10, 500, 21, 1, "New data to be stored")
         expect(return_set).to eql("STORED\r\n")
       end
       it "set a value to a key that exists with a correct cas_num > 1" do  
-        @client.set("key", 10, 500, 20, "Data to be stored")
-        @client.set("key", 10, 500, 20, "New data to be stored")
-        return_set = @client.cas("key", 10, 500, 20, 2, "New data to be stored 2")
+        @client.set("key", 10, 500, 17, "Data to be stored")
+        @client.set("key", 10, 500, 21, "New data to be stored")
+        return_set = @client.cas("key", 10, 500, 23, 2, "New data to be stored 2")
         expect(return_set).to eql("STORED\r\n")
       end
       it "set a value to a key that exists with an incorrect cas_num" do  
-        @client.set("key", 10, 500, 20, "Data to be stored")
-        return_set = @client.cas("key", 10, 500, 20, 3, "New data to be stored")
+        @client.set("key", 10, 500, 17, "Data to be stored")
+        return_set = @client.cas("key", 10, 500, 21, 3, "New data to be stored")
         expect(return_set).to eql("EXISTS\r\n")
       end
       it "cas a value asociated to a key that doesn't exist" do  
-        return_set = @client.cas("key", 10, 500, 20, 2, "New data to be stored")
+        return_set = @client.cas("key", 10, 500, 21, 2, "New data to be stored")
         expect(return_set).to eql("NOT_FOUND\r\n")
       end
       it "cas a value but use noreply" do  
-        @client.set("key", 10, 500, 20, "Data to be stored")
-        response = @client.cas("key", 10, 500, 20, 1, 'noreply', "New data to be stored")
+        @client.set("key", 10, 500, 17, "Data to be stored")
+        response = @client.cas("key", 10, 500, 21, 1, 'noreply', "New data to be stored")
         expect(response).to eql(nil)
       end
     end

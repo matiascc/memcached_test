@@ -104,20 +104,20 @@ module MemcachedTest
          return @socket.gets() unless noreply == 'noreply'
       end
 
-      def append(key, flags, exptime, bytes, noreply = '', data)
+      def append(key, bytes, noreply = '', data)
          if noreply == ''
-            @socket.puts("append #{key} #{flags} #{exptime} #{bytes} #{data}")  
+            @socket.puts("append #{key} #{bytes} #{data}")  
          else
-            @socket.puts("append #{key} #{flags} #{exptime} #{bytes} #{noreply} #{data}")  
+            @socket.puts("append #{key} #{bytes} #{noreply} #{data}")  
          end 
          return @socket.gets() unless noreply == 'noreply'
       end
 
-      def prepend(key, flags, exptime, bytes, noreply = '', data)
+      def prepend(key, bytes, noreply = '', data)
          if noreply == ''
-            @socket.puts("prepend #{key} #{flags} #{exptime} #{bytes} #{data}")  
+            @socket.puts("prepend #{key} #{bytes} #{data}")  
          else
-            @socket.puts("prepend #{key} #{flags} #{exptime} #{bytes} #{noreply} #{data}")  
+            @socket.puts("prepend #{key} #{bytes} #{noreply} #{data}")  
          end 
          return @socket.gets() unless noreply == 'noreply'
       end

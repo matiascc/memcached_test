@@ -36,11 +36,11 @@ module MemcachedTest
 
         def set(key, flags, exptime, bytes, data)
             if @cache.key?(key)
-                item = Memcached_item.new(flags, exptime, bytes, @cache[key].cas.to_i + 1, data)
+                item = Memcached_item.new(flags, exptime, bytes, @cache[key].cas.to_i + 1, data[0, bytes.to_i])
                 @cache[key] = item
                 return "STORED\r\n" 
             else
-                item = Memcached_item.new(flags, exptime, bytes, 1, data)
+                item = Memcached_item.new(flags, exptime, bytes, 1, data[0, bytes.to_i])
                 @cache[key] = item
                 return "STORED\r\n"  
             end
@@ -50,7 +50,7 @@ module MemcachedTest
             if @cache.key?(key)
                 return "NOT_STORED\r\n"
             else
-                item = Memcached_item.new(flags, exptime, bytes, 1, data)
+                item = Memcached_item.new(flags, exptime, bytes, 1, data[0, bytes.to_i])
                 @cache[key] = item
                 return "STORED\r\n" 
             end
@@ -58,7 +58,7 @@ module MemcachedTest
 
         def replace(key, flags, exptime, bytes, data)
             if @cache.key?(key)
-                item = Memcached_item.new(flags, exptime, bytes, @cache[key].cas + 1, data)
+                item = Memcached_item.new(flags, exptime, bytes, @cache[key].cas + 1, data[0, bytes.to_i])
                 @cache[key] = item
                 return "STORED\r\n"
             else
@@ -66,10 +66,10 @@ module MemcachedTest
             end
         end
 
-        def append(key, flags, exptime, bytes, data)
+        def append(key, bytes, data)
             if @cache.key?(key)        
                 item_old = @cache[key]
-                item_new = Memcached_item.new(flags, exptime, bytes, @cache[key].cas + 1, item_old.data + data)
+                item_new = Memcached_item.new(item_old.flags, item_old.exptime, item_old.bytes.to_i + bytes.to_i, @cache[key].cas + 1, item_old.data + data[0, bytes.to_i])
                 @cache[key] = item_new
                 return "STORED\r\n"
             else
@@ -77,10 +77,10 @@ module MemcachedTest
             end
         end
 
-        def prepend(key, flags, exptime, bytes, data)
+        def prepend(key, bytes, data)
             if @cache.key?(key)
                 item_old = @cache[key]
-                item_new = Memcached_item.new(flags, exptime, bytes, @cache[key].cas + 1, data + item_old.data)
+                item_new = Memcached_item.new(item_old.flags, item_old.exptime, item_old.bytes.to_i + bytes.to_i, @cache[key].cas + 1, data[0, bytes.to_i] + item_old.data)
                 @cache[key] = item_new
                 return "STORED\r\n"
             else
@@ -91,7 +91,7 @@ module MemcachedTest
         def cas(key, flags, exptime, bytes, cas, data)
             if @cache.key?(key) 
                 if @cache[key].cas == cas.to_i
-                    item = Memcached_item.new(flags, exptime, bytes, cas, data)
+                    item = Memcached_item.new(flags, exptime, bytes, cas.to_i + 1, data[0, bytes.to_i])
                     @cache[key] = item
                     return "STORED\r\n"
                 else

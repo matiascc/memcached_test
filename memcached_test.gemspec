@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
     spec.email       = 'matiascaporale9@gmail.com'
     spec.summary     = 'Test of a memcached server'
     spec.description = 'Test of a memcached server for coding challenge'
-    spec.date        = '2020-06-22'
+    spec.date        = '2020-06-29'
     spec.homepage    = 'https://rubygems.org/gems/memcached_test'
     spec.license     = 'MIT'
 
