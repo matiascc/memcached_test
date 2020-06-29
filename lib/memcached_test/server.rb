@@ -66,37 +66,37 @@ module MemcachedTest
 
          when Commands_format.set
             key, flags, exptime, bytes, noreply, cas = self.pass_parameters($~)
-            data = conn.gets.chomp
+            data = client.gets.chomp
             response = @memcached.set(key, flags, exptime, bytes, data)
             client.puts response unless noreply
 
          when Commands_format.add
             key, flags, exptime, bytes, noreply, cas = self.pass_parameters($~)
-            data = conn.gets.chomp
+            data = client.gets.chomp
             response = @memcached.add(key, flags, exptime, bytes, data)
             client.puts response unless noreply
 
          when Commands_format.replace
             key, flags, exptime, bytes, noreply, cas = self.pass_parameters($~)
-            data = conn.gets.chomp
+            data = client.gets.chomp
             response = @memcached.replace(key, flags, exptime, bytes, data)
             client.puts response unless noreply
 
          when Commands_format.append
             key, flags, exptime, bytes, noreply, cas = self.pass_parameters($~)
-            data = conn.gets.chomp
+            data = client.gets.chomp
             response = @memcached.append(key, bytes, data)
             client.puts response unless noreply
 
          when Commands_format.prepend
             key, flags, exptime, bytes, noreply, cas = self.pass_parameters($~)
-            data = conn.gets.chomp
+            data = client.gets.chomp
             response = @memcached.prepend(key, bytes, data)
             client.puts response unless noreply
 
          when Commands_format.cas
             key, flags, exptime, bytes, noreply, cas = self.pass_parameters($~)
-            data = conn.gets.chomp
+            data = client.gets.chomp
             response = @memcached.cas(key, flags, exptime, bytes, cas, data)
             client.puts response unless noreply
 
@@ -124,7 +124,7 @@ module MemcachedTest
          bytes = reg_exp['bytes']
          noreply = !reg_exp['noreply'].nil?
          cas = reg_exp['cas'] if reg_exp['command'] == 'cas'
-         return key, flags, exptime, bytes, noreply, cas, data
+         return key, flags, exptime, bytes, noreply, cas
       end
    end
 end

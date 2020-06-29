@@ -43,15 +43,24 @@
           <stringProp name="TCPSampler.port"></stringProp>
           <boolProp name="TCPSampler.nodelay">false</boolProp>
           <stringProp name="TCPSampler.timeout"></stringProp>
-          <stringProp name="TCPSampler.request">set test 10 10 4 Data\r\n
-set test2 5 2 5 Data2\r\n
-set test3 10 10 4 Data\r\n
-set test4 10 10 5 Data2\r\n
-add test5 10 2 4 Data\r\n
-replace test5 10 2 4 Data\r\n
-prepend test 3 New\r\n
-append test3 2 noreply _2\r\n
-cas test2 5 5 4 1 text\r\n
+          <stringProp name="TCPSampler.request">set test 10 10 4\r\n
+Data
+set test2 5 2 5\r\n
+Data2
+set test3 10 10 4\r\n
+Data
+set test4 10 10 5\r\n
+Data2
+add test5 10 2 4\r\n
+Data
+replace test5 10 2 4\r\n
+Data
+prepend test 3\r\n
+New
+append test3 2 noreply\r\n
+_2
+cas test2 5 5 4 1\r\n
+text
 get test test2\r\n
 get test3 test4\r\n
 gets test5\r\n
@@ -93,7 +102,7 @@ quit
           <hashTree/>
         </hashTree>
       </hashTree>
-      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="false">
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>

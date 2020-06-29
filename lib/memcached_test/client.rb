@@ -79,54 +79,66 @@ module MemcachedTest
       
       def set(key, flags, exptime, bytes, noreply = '', data)
          if noreply == ''
-            @socket.puts("set #{key} #{flags} #{exptime} #{bytes} #{data}")  
+            @socket.puts("set #{key} #{flags} #{exptime} #{bytes}")
+            @socket.puts("#{data}")
          else
-            @socket.puts("set #{key} #{flags} #{exptime} #{bytes} #{noreply} #{data}")  
+            @socket.puts("set #{key} #{flags} #{exptime} #{bytes} #{noreply}")
+            @socket.puts("#{data}")
          end
          return @socket.gets() unless noreply == 'noreply'
       end
 
       def add(key, flags, exptime, bytes, noreply = '', data)
          if noreply == ''
-            @socket.puts("add #{key} #{flags} #{exptime} #{bytes} #{data}")  
+            @socket.puts("add #{key} #{flags} #{exptime} #{bytes}") 
+            @socket.puts("#{data}")
          else
-            @socket.puts("add #{key} #{flags} #{exptime} #{bytes} #{noreply} #{data}")  
+            @socket.puts("add #{key} #{flags} #{exptime} #{bytes} #{noreply}")
+            @socket.puts("#{data}")
          end
          return @socket.gets() unless noreply == 'noreply'
       end
 
       def replace(key, flags, exptime, bytes, noreply = '', data)
          if noreply == ''
-            @socket.puts("replace #{key} #{flags} #{exptime} #{bytes} #{data}")  
+            @socket.puts("replace #{key} #{flags} #{exptime} #{bytes}")  
+            @socket.puts("#{data}")
          else
-            @socket.puts("replace #{key} #{flags} #{exptime} #{bytes} #{noreply} #{data}")  
+            @socket.puts("replace #{key} #{flags} #{exptime} #{bytes} #{noreply}")  
+            @socket.puts("#{data}")
          end
          return @socket.gets() unless noreply == 'noreply'
       end
 
       def append(key, bytes, noreply = '', data)
          if noreply == ''
-            @socket.puts("append #{key} #{bytes} #{data}")  
+            @socket.puts("append #{key} #{bytes}")
+            @socket.puts("#{data}")
          else
-            @socket.puts("append #{key} #{bytes} #{noreply} #{data}")  
+            @socket.puts("append #{key} #{bytes} #{noreply}")
+            @socket.puts("#{data}")
          end 
          return @socket.gets() unless noreply == 'noreply'
       end
 
       def prepend(key, bytes, noreply = '', data)
          if noreply == ''
-            @socket.puts("prepend #{key} #{bytes} #{data}")  
+            @socket.puts("prepend #{key} #{bytes}")
+            @socket.puts("#{data}")
          else
-            @socket.puts("prepend #{key} #{bytes} #{noreply} #{data}")  
+            @socket.puts("prepend #{key} #{bytes} #{noreply}")
+            @socket.puts("#{data}")
          end 
          return @socket.gets() unless noreply == 'noreply'
       end
 
       def cas(key, flags, exptime, bytes, cas, noreply = '', data)
          if noreply == ''
-            @socket.puts("cas #{key} #{flags} #{exptime} #{bytes} #{cas} #{data}")  
+            @socket.puts("cas #{key} #{flags} #{exptime} #{bytes} #{cas}")
+            @socket.puts("#{data}")
          else
-            @socket.puts("cas #{key} #{flags} #{exptime} #{bytes} #{cas} #{noreply} #{data}") 
+            @socket.puts("cas #{key} #{flags} #{exptime} #{bytes} #{cas} #{noreply}")
+            @socket.puts("#{data}")
          end
          return @socket.gets() unless noreply == 'noreply'
       end
