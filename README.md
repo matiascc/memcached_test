@@ -67,7 +67,19 @@ For example:
 ``` shell
 memcached_test_client localhost 11211
 ```
-And finally try the commands in the client console.
+And finally try the commands in the client console. 
+For example to store data and then retrieve it:
+``` shell
+set <key> <flags> <exptime> <bytes> [noreply]
+<data block>
+get <key>
+```
+An example with data:
+``` shell
+set test 10 20 4
+Data
+get test
+```
 
 ## Testing
 To test the commands execute inside the main folder: 
